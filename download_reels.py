@@ -3,7 +3,7 @@ import os
 import yt_dlp
 
 def download_instagram_reel(url, download_folder="Instagram_Reels"):
-    loader = instaloader.Instaloader(download_pictures=False, download_videos=True, post_metadata_txt_pattern="")
+    loader = instaloader.Instaloader(download_pictures=False, download_videos=True, download_comments=False, post_metadata_txt_pattern="")
     
     if not os.path.exists(download_folder):
         os.makedirs(download_folder)
@@ -14,6 +14,12 @@ def download_instagram_reel(url, download_folder="Instagram_Reels"):
         
         # Download only the video reel
         loader.download_post(post, target=download_folder)
+        
+        # Remove any unwanted .json.xz files
+        for file in os.listdir(download_folder):
+            if file.endswith(".json.xz"):
+                os.remove(os.path.join(download_folder, file))
+        
         print(f"Downloaded Instagram Reel: {shortcode}")
     except Exception as e:
         print(f"Failed to download {url}: {e}")
@@ -45,8 +51,6 @@ def download_reels(reel_urls):
             download_facebook_reel(url)
         else:
             print(f"Unsupported URL format: {url}")
-
-
 if __name__ == "__main__":
     reel_urls = [
         "https://www.instagram.com/reel/DCQMDzRPTdA/?igsh=MWlzaDV6N3VlazFjag==",
